@@ -1,21 +1,38 @@
 import os
+from contextlib import asynccontextmanager
+from pathlib import Path
+
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
 from grm_rs import Neo4jSession
+
 from finance_app.store import FinanceStore
 
 
-def main():
-    print("Hello from famfin-tutorial!")
+BASE_DIR = Path(__file__).resolve().parent
+templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     graph = Neo4jSession(
         uri=os.environ["NEO4J_URI"],
         user=os.environ["NEO4J_USER"],
         password=os.environ["NEO4J_PASSWORD"],
     )
-
-    store = FinanceStore(graph)
-
-    print(f"Connected to store! {store}")
+    app.state.store = FinanceStore(graph)
+    yield
 
 
-if __name__ == "__main__":
-    main()
+app = FastAPI(lifespan=lifespan)
+
+
+@app.get("/")
+def home(request: Request):
+    store: FinanceStore = request.app.state.store
+
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"store": store},
+    )

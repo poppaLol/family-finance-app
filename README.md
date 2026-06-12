@@ -13,7 +13,7 @@ NEO4J_PASSWORD=change-this-password
 
 1. Install `uv`
 1. Clone this project
-1. Clone `grm-rs` in a sibling folder
+1. Clone `https://github.com/poppaLol/grm-rs` in a sibling folder
 1. Build the python library with `maturin build --manifest-path grm-python/Cargo.toml --release --out dist` in the root of the folder
 1. `uv sync` in this project
 1. run a neo4j community docker in

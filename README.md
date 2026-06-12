@@ -19,7 +19,14 @@ export NEO4J_PASSWORD=change-this-password
 1. `uv run main.py` to prove you can connect to the store
 
 ```
-$ uv run main.py
+$ uv run uvicorn main:app --reload
 Hello from famfin-tutorial!
-Connected to store! <finance_app.store.FinanceStore object at 0x7bb6e8f2ea50>
+INFO:     Will watch for changes in these directories: ['/home/<USER>/source/famfin-tutorial']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [413631] using WatchFiles
+INFO:     Started server process [413633]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
 ```
+
+Navigate to the URI to see if the connection to the database succeeded.

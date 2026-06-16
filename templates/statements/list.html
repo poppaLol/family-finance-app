@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statement Lines</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <main class="container py-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="h3 mb-1">Statement Lines</h1>
+                <p class="text-secondary mb-0">Transactions saved in the finance graph.</p>
+            </div>
+
+            <a href="/statements/create" class="btn btn-primary">Add Line</a>
+        </div>
+
+        {% if statements %}
+        <div class="table-responsive bg-white border rounded">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Counter Party</th>
+                        <th>Reference</th>
+                        <th>Type</th>
+                        <th class="text-end">Amount</th>
+                        <th class="text-end">Balance</th>
+                        <th>Category</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for statement in statements %}
+                    {% set line = statement.props %}
+                    <tr>
+                        <td>{{ line.date }}</td>
+                        <td>{{ line.counter_party }}</td>
+                        <td>{{ line.reference }}</td>
+                        <td>{{ line.transaction_type }}</td>
+                        <td class="text-end">{{ "%.2f"|format(line.amount) }}</td>
+                        <td class="text-end">{{ "%.2f"|format(line.balance) }}</td>
+                        <td>{{ line.external_category }}</td>
+                        <td>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="/statements/{{ statement.id }}/edit" class="btn btn-sm btn-outline-primary">
+                                    Edit
+                                </a>
+                                <form method="post" action="/statements/{{ statement.id }}/delete">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="bg-white border rounded p-4 text-center">
+            <p class="text-secondary mb-3">No statement lines have been saved yet.</p>
+            <a href="/statements/create" class="btn btn-primary">Add Line</a>
+        </div>
+        {% endif %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

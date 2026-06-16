@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from grm_rs import Neo4jSession
 
 from finance_app.store import FinanceStore
+import statements
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -25,6 +26,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(statements.router)
 
 
 @app.get("/")

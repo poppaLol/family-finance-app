@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .form-card {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .required::after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="card shadow-sm form-card">
+
+                    <div class="card-header">
+                        <h2 class="mb-0">{{ title }}</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        {% if errors %}
+                        <div class="alert alert-danger">
+                            <h5>Validation Errors</h5>
+                            <ul class="mb-0">
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <form method="post">
+
+                            <div class="mb-3">
+                                <label for="date" class="form-label required">
+                                    Transaction Date
+                                </label>
+                                <input type="datetime-local" class="form-control" id="date" name="date"
+                                    value="{{ form.date if form else '' }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="counter_party" class="form-label required">
+                                    Counter Party
+                                </label>
+                                <input type="text" class="form-control" id="counter_party" name="counter_party"
+                                    value="{{ form.counter_party if form else '' }}" placeholder="e.g. Tesco Stores Ltd"
+                                    required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="reference" class="form-label">
+                                    Reference
+                                </label>
+                                <input type="text" class="form-control" id="reference" name="reference"
+                                    value="{{ form.reference if form else '' }}" placeholder="Transaction reference">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="transaction_type" class="form-label required">
+                                    Transaction Type
+                                </label>
+
+                                <select class="form-select" id="transaction_type" name="transaction_type" required>
+
+                                    <option value="">Select transaction type</option>
+
+                                    {% for tx_type in transaction_types %}
+                                    <option value="{{ tx_type }}" {% if form and form.transaction_type==tx_type
+                                        %}selected{% endif %}>
+                                        {{ tx_type }}
+                                    </option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="amount" class="form-label required">
+                                        Amount
+                                    </label>
+                                    <input type="number" class="form-control" id="amount" name="amount" step="0.01"
+                                        value="{{ form.amount if form else '' }}" placeholder="0.00" required>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="balance" class="form-label required">
+                                        Balance
+                                    </label>
+                                    <input type="number" class="form-control" id="balance" name="balance" step="0.01"
+                                        value="{{ form.balance if form else '' }}" placeholder="0.00" required>
+                                </div>
+
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="external_category" class="form-label">
+                                    External Category
+                                </label>
+                                <input type="text" class="form-control" id="external_category" name="external_category"
+                                    value="{{ form.external_category if form else '' }}" placeholder="e.g. Groceries">
+                            </div>
+
+                            <hr>
+
+                            <div class="d-flex justify-content-between">
+
+                                <a href="/statements" class="btn btn-outline-secondary">
+                                    Cancel
+                                </a>
+
+                                <button type="submit" class="btn btn-primary">
+                                    {{ submit_label }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

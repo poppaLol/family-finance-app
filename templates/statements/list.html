@@ -17,8 +17,17 @@
                 <p class="text-secondary mb-0">Transactions saved in the finance graph.</p>
             </div>
 
-            <a href="/statements/create" class="btn btn-primary">Add Line</a>
+            <div class="d-flex gap-2">
+                <a href="/statements/import" class="btn btn-outline-primary">Import CSV</a>
+                <a href="/statements/create" class="btn btn-primary">Add Line</a>
+            </div>
         </div>
+
+        {% if imported %}
+        <div class="alert alert-success">
+            Imported {{ imported }} statement line{% if imported != 1 %}s{% endif %}.
+        </div>
+        {% endif %}
 
         {% if statements %}
         <div class="table-responsive bg-white border rounded">
@@ -66,7 +75,10 @@
         {% else %}
         <div class="bg-white border rounded p-4 text-center">
             <p class="text-secondary mb-3">No statement lines have been saved yet.</p>
-            <a href="/statements/create" class="btn btn-primary">Add Line</a>
+            <div class="d-flex justify-content-center gap-2">
+                <a href="/statements/import" class="btn btn-outline-primary">Import CSV</a>
+                <a href="/statements/create" class="btn btn-primary">Add Line</a>
+            </div>
         </div>
         {% endif %}
     </main>

@@ -1,5 +1,6 @@
 from grm_rs import GraphSession
 
+from finance_app.csv_adapter import statement_lines_to_batch
 from finance_app.models import StatementLine
 
 
@@ -30,6 +31,15 @@ class FinanceStore:
 
     def save(self, line: StatementLine):
         return self.graph.node_create(self.statement_line_model, line.model_dump())
+
+    def import_statement_lines(self, lines: list[StatementLine]) -> int:
+        if not lines:
+            return 0
+        self.graph.batch(
+            statement_lines_to_batch(lines),
+            response="summary",
+        )
+        return len(lines)
 
     def list_statement_lines(self):
         return self.graph.node_find(self.statement_line_model)

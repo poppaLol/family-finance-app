@@ -1,9 +1,10 @@
 from typing import Annotated
 
 
-from fastapi import APIRouter, Form, HTTPException, Request
+from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from finance_app.csv_adapter import parse_statement_csv
 from finance_app.models import StatementLine
 
 
@@ -40,13 +41,16 @@ def _statement_line_from_form(
 
 
 @router.get("/", response_class=HTMLResponse)
-async def statement_list(request: Request):
+async def statement_list(request: Request, imported: int | None = None):
     store = request.app.state.store
 
     return templates.TemplateResponse(
         request=request,
         name="statements/list.html",
-        context={"statements": store.list_statement_lines()},
+        context={
+            "statements": store.list_statement_lines(),
+            "imported": imported,
+        },
     )
 
 
@@ -92,6 +96,44 @@ async def statement_input_post(
 
     return RedirectResponse(
         "/statements",
+        status_code=303,
+    )
+
+
+@router.get("/import", response_class=HTMLResponse)
+async def statement_import(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="statements/import.html",
+        context={"errors": []},
+    )
+
+
+@router.post("/import", response_class=HTMLResponse)
+async def statement_import_post(request: Request, file: UploadFile = File(...)):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
+        return templates.TemplateResponse(
+            request=request,
+            name="statements/import.html",
+            context={"errors": ["Please upload a CSV file"]},
+            status_code=400,
+        )
+
+    try:
+        lines = parse_statement_csv(await file.read())
+    except (UnicodeDecodeError, ValueError) as exc:
+        return templates.TemplateResponse(
+            request=request,
+            name="statements/import.html",
+            context={"errors": [str(exc)]},
+            status_code=400,
+        )
+
+    store = request.app.state.store
+    imported = store.import_statement_lines(lines)
+
+    return RedirectResponse(
+        f"/statements?imported={imported}",
         status_code=303,
     )
 

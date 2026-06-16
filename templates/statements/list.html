@@ -18,6 +18,7 @@
             </div>
 
             <div class="d-flex gap-2">
+                <a href="/" class="btn btn-outline-secondary">Home</a>
                 <a href="/statements/import" class="btn btn-outline-primary">Import CSV</a>
                 <a href="/statements/create" class="btn btn-primary">Add Line</a>
             </div>
@@ -37,6 +38,7 @@
                         <th>Date</th>
                         <th>Counter Party</th>
                         <th>Reference</th>
+                        <th>Owner</th>
                         <th>Type</th>
                         <th class="text-end">Amount</th>
                         <th class="text-end">Balance</th>
@@ -46,21 +48,28 @@
                 </thead>
                 <tbody>
                     {% for statement in statements %}
-                    {% set line = statement.props %}
+                    {% set line = statement.statement.props %}
                     <tr>
                         <td>{{ line.date }}</td>
                         <td>{{ line.counter_party }}</td>
                         <td>{{ line.reference }}</td>
+                        <td>
+                            {% if statement.owner_names %}
+                            {{ statement.owner_names|join(", ") }}
+                            {% else %}
+                            <span class="text-secondary">Unassigned</span>
+                            {% endif %}
+                        </td>
                         <td>{{ line.transaction_type }}</td>
                         <td class="text-end">{{ "%.2f"|format(line.amount) }}</td>
                         <td class="text-end">{{ "%.2f"|format(line.balance) }}</td>
                         <td>{{ line.external_category }}</td>
                         <td>
                             <div class="d-flex justify-content-end gap-2">
-                                <a href="/statements/{{ statement.id }}/edit" class="btn btn-sm btn-outline-primary">
+                                <a href="/statements/{{ statement.statement.id }}/edit" class="btn btn-sm btn-outline-primary">
                                     Edit
                                 </a>
-                                <form method="post" action="/statements/{{ statement.id }}/delete">
+                                <form method="post" action="/statements/{{ statement.statement.id }}/delete">
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         Delete
                                     </button>

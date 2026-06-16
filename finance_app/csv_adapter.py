@@ -1,9 +1,6 @@
 import csv
 import io
 import re
-from typing import Iterable
-
-from grm_rs import BatchOperation
 
 from finance_app.models import StatementLine
 
@@ -80,16 +77,3 @@ def parse_statement_csv(content: bytes) -> list[StatementLine]:
     if not lines:
         raise ValueError("CSV contains no statement lines")
     return lines
-
-
-def statement_lines_to_batch(lines: Iterable[StatementLine]) -> list[BatchOperation]:
-    return [
-        {
-            "op": "node_create",
-            "args": {
-                "model": "StatementLine",
-                "props": line.model_dump(),
-            },
-        }
-        for line in lines
-    ]

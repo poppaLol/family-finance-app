@@ -1,4 +1,12 @@
+from typing import ClassVar
+
 from pydantic import BaseModel
+
+
+class Person(BaseModel):
+    __grm_id_field__: ClassVar[str] = "personId"
+
+    name: str
 
 
 ## from statements we might want to support the following kinds of input
@@ -11,3 +19,15 @@ class StatementLine(BaseModel):
     amount: float
     balance: float
     external_category: str
+
+
+class PersonOwnsStatementLine(BaseModel):
+    __grm_link_name__: ClassVar[str] = "OWNS"
+    __grm_from_model__: ClassVar[str] = "Person"
+    __grm_to_model__: ClassVar[str] = "StatementLine"
+    __grm_id_field__: ClassVar[str] = "ownsId"
+    __grm_from_id_field__: ClassVar[str] = "person_id"
+    __grm_to_id_field__: ClassVar[str] = "statement_line_id"
+
+    person_id: int
+    statement_line_id: int

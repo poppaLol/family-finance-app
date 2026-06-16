@@ -48,7 +48,7 @@ async def statement_list(request: Request, imported: int | None = None):
         request=request,
         name="statements/list.html",
         context={
-            "statements": store.list_statement_lines(),
+            "statements": store.list_statement_lines_with_owners(),
             "imported": imported,
         },
     )
@@ -102,20 +102,35 @@ async def statement_input_post(
 
 @router.get("/import", response_class=HTMLResponse)
 async def statement_import(request: Request):
+    store = request.app.state.store
     return templates.TemplateResponse(
         request=request,
         name="statements/import.html",
-        context={"errors": []},
+        context={"errors": [], "people": store.list_persons()},
     )
 
 
 @router.post("/import", response_class=HTMLResponse)
-async def statement_import_post(request: Request, file: UploadFile = File(...)):
+async def statement_import_post(
+    request: Request,
+    person_id: Annotated[int, Form()],
+    file: UploadFile = File(...),
+):
+    store = request.app.state.store
+    people = store.list_persons()
+    if store.get_person(person_id) is None:
+        return templates.TemplateResponse(
+            request=request,
+            name="statements/import.html",
+            context={"errors": ["Please choose a family member"], "people": people},
+            status_code=400,
+        )
+
     if not file.filename or not file.filename.lower().endswith(".csv"):
         return templates.TemplateResponse(
             request=request,
             name="statements/import.html",
-            context={"errors": ["Please upload a CSV file"]},
+            context={"errors": ["Please upload a CSV file"], "people": people},
             status_code=400,
         )
 
@@ -125,12 +140,11 @@ async def statement_import_post(request: Request, file: UploadFile = File(...)):
         return templates.TemplateResponse(
             request=request,
             name="statements/import.html",
-            context={"errors": [str(exc)]},
+            context={"errors": [str(exc)], "people": people},
             status_code=400,
         )
 
-    store = request.app.state.store
-    imported = store.import_statement_lines(lines)
+    imported = store.import_statement_lines(lines, person_id)
 
     return RedirectResponse(
         f"/statements?imported={imported}",

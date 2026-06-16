@@ -108,7 +108,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.136.3" },
-    { name = "grm-rs", specifier = "==0.1.0a8" },
+    { name = "grm-rs", specifier = "==0.1.1" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "python-multipart", specifier = ">=0.0.32" },
     { name = "uvicorn", specifier = ">=0.49.0" },
@@ -225,13 +225,13 @@ wheels = [
 
 [[package]]
 name = "grm-rs"
-version = "0.1.0a8"
+version = "0.1.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/1d/9a/46120b7036f17cfa014ea9cc8b51ddb3a0c14c614627384873700a3dd424/grm_rs-0.1.0a8.tar.gz", hash = "sha256:9e07b16f3ae2f4c544871a115fea34b9bfa98db6b6f2686a7b61a8f60c3b1029", size = 398943, upload-time = "2026-06-12T13:55:39.316Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fb/4b/3e84a81b722e0434c0db9b5450d1b21a90f0f7ed16122b05b1a470f2ffea/grm_rs-0.1.1.tar.gz", hash = "sha256:699835cbce06eda6d0e794189bb273dc656853853d95b94675009622fe5a6c95", size = 433255, upload-time = "2026-06-16T13:33:09.633Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f1/71/2ec211df4d09dd47f1943a456c39459c90b52c052ea459db8546fba975b8/grm_rs-0.1.0a8-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:e92a575ac59cd0bb50e2a3035086d49e668ba55d4771838fe5de0602c3509d78", size = 3802648, upload-time = "2026-06-12T13:55:33.956Z" },
-    { url = "https://files.pythonhosted.org/packages/03/cf/1f1e3ce5b9cac0cb4634ac81b43eddc853758d82efbc45564d2dfc810549/grm_rs-0.1.0a8-cp39-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:4baa25d8a5c8cc9b97ce050a8fde93632de683a05aca51ede0cdb64c0f18b361", size = 4359236, upload-time = "2026-06-12T13:55:35.796Z" },
-    { url = "https://files.pythonhosted.org/packages/61/af/68f83ae49ff06bac8a7cd9901fc0356135d795ad5fded010c1094b216895/grm_rs-0.1.0a8-cp39-abi3-win_amd64.whl", hash = "sha256:d6e897467a4c75471f9b9c78e7641ef234cad369448c12ff7bb7e90b0724677e", size = 3639808, upload-time = "2026-06-12T13:55:37.552Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/f1/ebfc7ad69117d0f6d93291915be77136c5d52d4bad52659039959aca60b2/grm_rs-0.1.1-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:5bd3257910847a47c7f5f44b54bfa7dd321f0da1e6762e8da1c4ebcd70303344", size = 3809004, upload-time = "2026-06-16T13:33:04.564Z" },
+    { url = "https://files.pythonhosted.org/packages/81/42/e8c4f780f84436771260e80b8740e8728640bd49f318ce15e9ae0dad1c0a/grm_rs-0.1.1-cp39-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:a7751a38cd9440e9ef3a38c42f76d2fc9da30406e8cf757f195ff65b948fe29c", size = 4363283, upload-time = "2026-06-16T13:33:06.581Z" },
+    { url = "https://files.pythonhosted.org/packages/59/eb/4769588e02c4998ceacfffb83078d4bb4250497ef14aa2f88985972e8439/grm_rs-0.1.1-cp39-abi3-win_amd64.whl", hash = "sha256:8ba45e17e0f9b76b78b924eb4c9b8bb8947723c24d6aed7a1535526e1b21bdf2", size = 3646093, upload-time = "2026-06-16T13:33:08.294Z" },
 ]
 
 [[package]]

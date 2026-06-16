@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from grm_rs import Neo4jSession
 
 from finance_app.store import FinanceStore
+import people
 import statements
 
 
@@ -26,6 +27,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(people.router)
 app.include_router(statements.router)
 
 

@@ -1,8 +1,33 @@
 import csv
+import hashlib
 import io
+import json
 import re
 
 from finance_app.models import StatementLine
+
+
+def normalise_statement_key(line: StatementLine) -> str:
+    text = line.counter_party.upper()
+    for noise in (
+        "GOOGLE PAY",
+        "APPLE PAY",
+        "CARD PAYMENT",
+        "CARD PURCHASE",
+        "CONTACTLESS",
+        "VISA",
+        "MASTERCARD",
+        "DEBIT",
+        "CREDIT",
+        "POS",
+        "ONLINE",
+    ):
+        text = text.replace(noise, " ")
+
+    text = re.sub(r"\b\d{3,}\b", " ", text)
+    text = re.sub(r"[^A-Z0-9]+", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text or "UNKNOWN"
 
 
 def _normalise_header(value: str) -> str:
@@ -37,7 +62,19 @@ def _parse_float(value: str, row_number: int, field_name: str) -> float:
         ) from exc
 
 
-def parse_statement_csv(content: bytes) -> list[StatementLine]:
+def _statement_hash(source_name: str, row_number: int, props: dict[str, object]) -> str:
+    payload = {
+        "source_name": source_name,
+        "row_number": row_number,
+        "statement_line": props,
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode(
+        "utf-8"
+    )
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def parse_statement_csv(content: bytes, source_name: str = "") -> list[StatementLine]:
     text = content.decode("utf-8-sig")
     reader = csv.reader(io.StringIO(text))
     headers = next(reader, None)
@@ -62,15 +99,20 @@ def parse_statement_csv(content: bytes) -> list[StatementLine]:
         if not row or all(not cell.strip() for cell in row):
             continue
 
+        props = {
+            "date": _cell(row, date_index),
+            "counter_party": _cell(row, counter_party_index),
+            "reference": _cell(row, reference_index),
+            "transaction_type": _cell(row, transaction_type_index),
+            "amount": _parse_float(_cell(row, amount_index), row_number, "amount"),
+            "balance": _parse_float(_cell(row, balance_index), row_number, "balance"),
+            "external_category": _cell(row, category_index),
+        }
+
         lines.append(
             StatementLine(
-                date=_cell(row, date_index),
-                counter_party=_cell(row, counter_party_index),
-                reference=_cell(row, reference_index),
-                transaction_type=_cell(row, transaction_type_index),
-                amount=_parse_float(_cell(row, amount_index), row_number, "amount"),
-                balance=_parse_float(_cell(row, balance_index), row_number, "balance"),
-                external_category=_cell(row, category_index),
+                source_hash=_statement_hash(source_name, row_number, props),
+                **props,
             )
         )
 

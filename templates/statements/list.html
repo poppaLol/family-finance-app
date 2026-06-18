@@ -63,9 +63,20 @@
                         <td>{{ line.transaction_type }}</td>
                         <td class="text-end">{{ "%.2f"|format(line.amount) }}</td>
                         <td class="text-end">{{ "%.2f"|format(line.balance) }}</td>
-                        <td>{{ line.external_category }}</td>
+                        <td>
+                            {% if statement.category_names %}
+                            {{ statement.category_names|join(", ") }}
+                            {% elif line.external_category %}
+                            <span class="text-secondary">{{ line.external_category }}</span>
+                            {% else %}
+                            <span class="text-secondary">Uncategorised</span>
+                            {% endif %}
+                        </td>
                         <td>
                             <div class="d-flex justify-content-end gap-2">
+                                <a href="/statements/{{ statement.statement.id }}/categorise" class="btn btn-sm btn-outline-secondary">
+                                    Categorise
+                                </a>
                                 <a href="/statements/{{ statement.statement.id }}/edit" class="btn btn-sm btn-outline-primary">
                                     Edit
                                 </a>
